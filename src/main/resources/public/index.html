@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RPG - Vista MVC (HTML)</title>
+    <style>
+        :root {
+            --bg-color: #12151e;
+            --card-bg: #1c2130;
+            --primary: #e67e22;
+            --primary-hover: #d35400;
+            --accent: #3498db;
+            --success: #2ecc71;
+            --error: #e74c3c;
+            --text: #ecf0f1;
+            --text-muted: #95a5a6;
+            --border: #2c3e50;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text);
+            padding: 24px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 900px;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 24px;
+        }
+
+        h1 {
+            font-size: 2.2rem;
+            color: var(--primary);
+            letter-spacing: 1px;
+            margin-bottom: 8px;
+        }
+
+        .mvc-badge {
+            display: inline-block;
+            background: #2c3e50;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin-bottom: 12px;
+        }
+
+        .mvc-concept-alert {
+            background-color: rgba(52, 152, 219, 0.15);
+            border-left: 4px solid var(--accent);
+            padding: 14px;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            margin-bottom: 24px;
+            line-height: 1.5;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+        }
+
+        @media (max-width: 768px) {
+            .grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .card {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+        }
+
+        .card h2 {
+            font-size: 1.3rem;
+            margin-bottom: 16px;
+            color: var(--primary);
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .form-group {
+            margin-bottom: 16px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 6px;
+            font-size: 0.9rem;
+            color: var(--text-muted);
+        }
+
+        input, select {
+            width: 100%;
+            padding: 10px 12px;
+            background-color: #12151e;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            color: var(--text);
+            font-size: 0.95rem;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        input:focus, select:focus {
+            border-color: var(--primary);
+        }
+
+        button.btn-submit {
+            width: 100%;
+            background-color: var(--primary);
+            color: #fff;
+            border: none;
+            padding: 12px;
+            border-radius: 6px;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        button.btn-submit:hover {
+            background-color: var(--primary-hover);
+        }
+
+        #feedback-box {
+            display: none;
+            padding: 12px;
+            border-radius: 6px;
+            margin-top: 16px;
+            font-size: 0.9rem;
+        }
+
+        .feedback-success {
+            background-color: rgba(46, 204, 113, 0.2);
+            border: 1px solid var(--success);
+            color: #2ecc71;
+        }
+
+        .feedback-error {
+            background-color: rgba(231, 76, 60, 0.2);
+            border: 1px solid var(--error);
+            color: #e74c3c;
+        }
+
+        .personajes-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            max-height: 480px;
+            overflow-y: auto;
+            padding-right: 6px;
+        }
+
+        .personaje-item {
+            background: #151924;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 14px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .personaje-info h3 {
+            font-size: 1.1rem;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .personaje-meta {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin-top: 4px;
+        }
+
+        .badge-clase {
+            background: #2c3e50;
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .badge-guerrero { background: #c0392b; color: #fff; }
+        .badge-mago { background: #8e44ad; color: #fff; }
+        .badge-arquero { background: #27ae60; color: #fff; }
+
+        .hp-box {
+            text-align: right;
+        }
+
+        .hp-text {
+            font-size: 0.85rem;
+            color: var(--success);
+            font-weight: bold;
+        }
+
+        .empty-state {
+            text-align: center;
+            color: var(--text-muted);
+            padding: 32px 0;
+            font-size: 0.95rem;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <h1>⚔️ Panel de Control RPG</h1>
+        <div class="mvc-badge">Arquitectura MVC • Vista en HTML</div>
+        <div class="mvc-concept-alert">
+            <strong>📌 Principio de la Vista en MVC (Semana 3):</strong><br>
+            Esta Vista <em>únicamente captura los datos</em> y <em>los presenta en pantalla</em>. No valida reglas de negocio (como si el nivel es legal o si la vida es positiva). Es el <strong>Modelo</strong> quien ejecuta las validaciones de negocio en el backend y aprueba o rechaza cada registro.
+        </div>
+    </header>
+
+    <div class="grid">
+        <!-- CAPA DE CAPTURA DE DATOS (Formulario para POST) -->
+        <section class="card">
+            <h2>📝 Crear Nuevo Personaje</h2>
+            <form id="form-crear-personaje">
+                <div class="form-group">
+                    <label for="nombre">Nombre del Héroe</label>
+                    <input type="text" id="nombre" placeholder="Ej: Conan el Bárbaro" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="clase">Clase</label>
+                    <select id="clase">
+                        <option value="Guerrero">Guerrero 🛡️</option>
+                        <option value="Mago">Mago 🔮</option>
+                        <option value="Arquero">Arquero 🏹</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="nivel">Nivel (Regla del Modelo: Nivel ≥ 1)</label>
+                    <input type="number" id="nivel" value="1">
+                </div>
+
+                <div class="form-group">
+                    <label for="vida">Puntos de Vida (HP)</label>
+                    <input type="number" id="vida" value="100">
+                </div>
+
+                <button type="submit" class="btn-submit">➕ Enviar al Controlador (POST)</button>
+            </form>
+
+            <div id="feedback-box"></div>
+        </section>
+
+        <!-- CAPA DE PRESENTACIÓN DE DATOS (Lista obtenida con GET) -->
+        <section class="card">
+            <h2>📜 Héroes en Memoria (GET)</h2>
+            <div id="lista-personajes" class="personajes-list">
+                <div class="empty-state">Cargando personajes desde el Controlador...</div>
+            </div>
+        </section>
+    </div>
+</div>
+
+<script>
+    // ==========================================================
+    // ROL DE LA VISTA EN JAVASCRIPT:
+    // 1. Solicitar datos al Controlador vía HTTP GET y pintarlos.
+    // 2. Capturar datos del formulario y enviarlos al Controlador vía HTTP POST.
+    // * LA VISTA NO CONTIENE REGLAS DE NEGOCIO. *
+    // ==========================================================
+
+    const form = document.getElementById('form-crear-personaje');
+    const feedbackBox = document.getElementById('feedback-box');
+    const listaContenedor = document.getElementById('lista-personajes');
+
+    // Cargar personajes al iniciar la página (GET /personajes)
+    document.addEventListener('DOMContentLoaded', cargarPersonajes);
+
+    async function cargarPersonajes() {
+        try {
+            const respuesta = await fetch('/personajes');
+            const personajes = await respuesta.json();
+            renderizarPersonajes(personajes);
+        } catch (error) {
+            listaContenedor.innerHTML = `<div class="empty-state" style="color: var(--error);">Error al consultar los personajes: ${error.message}</div>`;
+        }
+    }
+
+    function renderizarPersonajes(personajes) {
+        if (!personajes || personajes.length === 0) {
+            listaContenedor.innerHTML = '<div class="empty-state">No hay personajes registrados en memoria actualmente.</div>';
+            return;
+        }
+
+        listaContenedor.innerHTML = '';
+        personajes.forEach(p => {
+            const claseLower = (p.clase || '').toLowerCase();
+            let icono = '🛡️';
+            let claseCss = 'badge-guerrero';
+
+            if (claseLower === 'mago') {
+                icono = '🔮';
+                claseCss = 'badge-mago';
+            } else if (claseLower === 'arquero') {
+                icono = '🏹';
+                claseCss = 'badge-arquero';
+            }
+
+            const itemDiv = document.createElement('div');
+            itemDiv.className = 'personaje-item';
+            itemDiv.innerHTML = `
+                <div class="personaje-info">
+                    <h3>${icono} ${p.nombre}</h3>
+                    <div class="personaje-meta">
+                        <span class="badge-clase ${claseCss}">${p.clase}</span>
+                        <span> • Nivel ${p.nivel}</span>
+                    </div>
+                </div>
+                <div class="hp-box">
+                    <span class="hp-text">${p.vida} HP</span>
+                </div>
+            `;
+            listaContenedor.appendChild(itemDiv);
+        });
+    }
+
+    // Capturar datos y enviar al Controlador vía POST /personajes
+    form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+
+        // 1. La Vista solo captura los valores tal como los ingresó el usuario
+        const nuevoPersonaje = {
+            nombre: document.getElementById('nombre').value,
+            clase: document.getElementById('clase').value,
+            nivel: parseInt(document.getElementById('nivel').value, 10),
+            vida: parseInt(document.getElementById('vida').value, 10)
+        };
+
+        // 2. La Vista envía los datos directamente al Controlador sin juzgar reglas de negocio
+        try {
+            const respuesta = await fetch('/personajes', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(nuevoPersonaje)
+            });
+
+            if (respuesta.status === 201) {
+                // Éxito: El Modelo validó y aceptó el personaje
+                const data = await respuesta.json();
+                mostrarFeedback(`✅ ¡Personaje '${data.nombre}' creado exitosamente!`, 'feedback-success');
+                form.reset();
+                document.getElementById('nivel').value = 1;
+                document.getElementById('vida').value = 100;
+                cargarPersonajes(); // Actualiza la lista automáticamente
+            } else {
+                // Rechazo: El Modelo aplicó una regla de negocio y no permitió la creación
+                const mensajeError = await respuesta.text();
+                mostrarFeedback(`❌ ${mensajeError}`, 'feedback-error');
+            }
+        } catch (error) {
+            mostrarFeedback(`❌ Error de conexión con el servidor: ${error.message}`, 'feedback-error');
+        }
+    });
+
+    function mostrarFeedback(mensaje, claseCss) {
+        feedbackBox.textContent = mensaje;
+        feedbackBox.className = claseCss;
+        feedbackBox.style.display = 'block';
+    }
+</script>
+
+</body>
+</html>
