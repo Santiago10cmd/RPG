@@ -4,10 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-/**
- * Modelo - Capa de Acceso a Datos y Reglas de Negocio en Memoria.
- * Administra el ArrayList de personajes y aplica las reglas del dominio.
- */
+
 public class PersonajeDAO {
 
     // Estructura en memoria solicitada (ArrayList)
